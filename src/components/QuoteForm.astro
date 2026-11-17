@@ -1,0 +1,133 @@
+---
+// The quote request form, in the brief's four steps (docs/brief.md): (1) the
+// case, (2) the building, (3) the wish, (4) how to reach the visitor and their
+// consent. It is a plain form post with no JavaScript: the steps are four
+// numbered fieldsets on one page, and the browser checks the required fields,
+// showing each error next to its field. The Worker checks everything again
+// (src/lib/quote-form.ts). Until the Worker exists the button is off.
+import { localizedPath, t, type Lang } from "../i18n";
+import { LEGAL_PATHS } from "../lib/navigation";
+import { quoteForm } from "../lib/quote-form";
+import { pageTexts } from "../texts";
+import Turnstile from "./forms/Turnstile.astro";
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const { quote } = pageTexts(lang);
+const { building, wish, contact } = quote;
+const connected = Boolean(quoteForm.action);
+const step = (number: number, legend: string) => `${quote.stepLabel} ${number}: ${legend}`;
+---
+
+<form class="quote-form" method="post" action={quoteForm.action} aria-describedby={connected ? undefined : "form-off"}>
+  <fieldset class="form-step">
+    <legend>{step(1, quote.case.legend)}</legend>
+    <div class="choices">
+      {
+        quote.case.choices.map((choice, index) => (
+          <label class="choice">
+            <input type="radio" name="primer" value={choice.value} required={index === 0} />
+            <span>{choice.label}</span>
+          </label>
+        ))
+      }
+    </div>
+  </fieldset>
+
+  <fieldset class="form-step">
+    <legend>{step(2, building.legend)}</legend>
+    <div class="field">
+      <label for="vrsta-hise">{building.houseType}</label>
+      <select id="vrsta-hise" name="vrsta_hise" required>
+        <option value="">{quote.choose}</option>
+        {building.houseTypes.map((choice) => <option value={choice.value}>{choice.label}</option>)}
+      </select>
+    </div>
+    <div class="field">
+      <label for="starost">{building.age}</label>
+      <select id="starost" name="starost_hise" required>
+        <option value="">{quote.choose}</option>
+        {building.ages.map((choice) => <option value={choice.value}>{choice.label}</option>)}
+      </select>
+    </div>
+    <div class="field">
+      <label for="povrsina">{building.area} <span class="optional">({quote.optional})</span></label>
+      <input id="povrsina" name="povrsina" type="number" inputmode="numeric" min="1" max="10000" step="1" aria-describedby="povrsina-hint" />
+      <p class="hint" id="povrsina-hint">{building.areaHint}</p>
+    </div>
+    <div class="field">
+      <label for="obcina">{building.municipality}</label>
+      <input id="obcina" name="obcina" type="text" autocomplete="address-level2" required />
+    </div>
+  </fieldset>
+
+  <fieldset class="form-step">
+    <legend>{step(3, wish.legend)}</legend>
+    <div class="field">
+      <label for="dela">{wish.work}</label>
+      <select id="dela" name="vrsta_del" required>
+        <option value="">{quote.choose}</option>
+        {wish.works.map((choice) => <option value={choice.value}>{choice.label}</option>)}
+      </select>
+    </div>
+    <div class="field">
+      <label for="rok">{wish.timeframe}</label>
+      <select id="rok" name="rok" required>
+        <option value="">{quote.choose}</option>
+        {wish.timeframes.map((choice) => <option value={choice.value}>{choice.label}</option>)}
+      </select>
+    </div>
+    <fieldset class="field">
+      <legend>{wish.subsidy}</legend>
+      <div class="choices choices-inline">
+        {
+          wish.subsidyChoices.map((choice, index) => (
+            <label class="choice">
+              <input type="radio" name="subvencija" value={choice.value} required={index === 0} />
+              <span>{choice.label}</span>
+            </label>
+          ))
+        }
+      </div>
+    </fieldset>
+    <div class="field">
+      <label for="sporocilo">{wish.message} <span class="optional">({quote.optional})</span></label>
+      <textarea id="sporocilo" name="sporocilo" rows="4" maxlength="2000" aria-describedby="sporocilo-hint"></textarea>
+      <p class="hint" id="sporocilo-hint">{wish.messageHint}</p>
+    </div>
+  </fieldset>
+
+  <fieldset class="form-step">
+    <legend>{step(4, contact.legend)}</legend>
+    <div class="field">
+      <label for="ime">{contact.name}</label>
+      <input id="ime" name="ime" type="text" autocomplete="name" required />
+    </div>
+    <p class="hint" id="reach-hint">{contact.reachHint}</p>
+    <div class="field">
+      <label for="telefon">{contact.phone}</label>
+      <input id="telefon" name="telefon" type="tel" autocomplete="tel" aria-describedby="reach-hint" />
+    </div>
+    <div class="field">
+      <label for="eposta">{contact.email}</label>
+      <input id="eposta" name="eposta" type="email" autocomplete="email" aria-describedby="reach-hint" />
+    </div>
+    <div class="field consent">
+      <input id="soglasje" name="soglasje" type="checkbox" value="da" required />
+      <label for="soglasje">
+        {contact.consentBefore}<a href={localizedPath(lang, LEGAL_PATHS.privacy)}>{contact.consentLink}</a>{contact.consentAfter}
+      </label>
+    </div>
+  </fieldset>
+
+  <Turnstile siteKey={quoteForm.turnstileSiteKey} action="povprasevanje" theme="light" />
+
+  <div class="form-submit">
+    <button class="button button-large" type="submit" disabled={!connected}>{quote.submit}</button>
+    <p class="hint">{t(lang, "cta.free")}</p>
+    {!connected && <p class="form-off" id="form-off">{quote.notConnected}</p>}
+  </div>
+</form>

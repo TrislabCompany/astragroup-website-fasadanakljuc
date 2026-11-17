@@ -1,0 +1,48 @@
+---
+// The numbered process line (docs/brief.md: the process is drawn as a numbered
+// line, not as icons in a grid): a vertical rule with a large numeral per step,
+// what happens, and what the owner does. Vertical at every width; on a wide
+// screen the owner's part sits beside the step instead of under it.
+import { t, type Lang } from "../i18n";
+import type { Step } from "../texts";
+
+interface Props {
+  lang: Lang;
+  heading: string;
+  id: string;
+  steps: Step[];
+  lead?: string;
+  /** Show the owner's part of each step (off on the home page's short version). */
+  owner?: boolean;
+}
+
+const { lang, heading, id, steps, lead, owner = true } = Astro.props;
+---
+
+<section class="band band-surface" aria-labelledby={id}>
+  <div class="wrap">
+    <h2 id={id}>{heading}</h2>
+    {lead && <p class="lead">{lead}</p>}
+    <ol class:list={["process", { "process-short": !owner }]}>
+      {
+        steps.map((step, index) => (
+          <li class="process-step">
+            <span class="process-number" aria-hidden="true">
+              {String(index + 1).padStart(2, "0")}
+            </span>
+            <div class="process-body">
+              <h3>{step.title}</h3>
+              <p>{step.text}</p>
+            </div>
+            {owner && (
+              <p class="process-owner">
+                <strong>{t(lang, "steps.owner")}:</strong> {step.owner}
+              </p>
+            )}
+          </li>
+        ))
+      }
+    </ol>
+    <slot />
+  </div>
+</section>

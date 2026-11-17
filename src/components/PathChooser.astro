@@ -1,0 +1,31 @@
+---
+// The two-path chooser of the home page (docs/brief.md): renovation or a new
+// turnkey facade, as two large links with one sentence each.
+import { localizedPath, type Lang } from "../i18n";
+import { PAGES } from "../lib/navigation";
+import { pageTexts } from "../texts";
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const { paths } = pageTexts(lang);
+const choices = [
+  { href: PAGES[0].href, ...paths.renovation },
+  { href: PAGES[1].href, ...paths.newFacade },
+];
+---
+
+<ul class="paths">
+  {
+    choices.map((choice) => (
+      <li>
+        <a class="path" href={localizedPath(lang, choice.href)}>
+          <span class="path-title">{choice.title}</span>
+          <span class="path-text">{choice.text}</span>
+        </a>
+      </li>
+    ))
+  }
+</ul>

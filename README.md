@@ -4,9 +4,31 @@ Fasada na ključ, fasadanakljuc.si, built from `tl-template-website` v0.5.0. Rea
 
 ## What it is
 
-An [Astro](https://astro.build) site built into static files, served by Cloudflare Pages. It has a home page, an about page, a contact page, an imprint, a privacy policy, an accessibility statement, a sustainability page, a sitemap page and a 404 page, and a list page and a page per item for `pogosta-vprasanja`. It sets no cookies and loads no outside service.
+An [Astro](https://astro.build) site built into static files, served by Cloudflare Pages. It explains, step by step, how a facade is renovated or built turnkey on a new house, and leads the visitor to a quote request. What to build is in [docs/brief.md](docs/brief.md). It sets no cookies and loads no outside service.
 
-**Languages:** Slovenian. The first is the default; each language lives under its own URL.
+**Languages:** Slovenian only, at the root (no language prefix).
+
+### Pages
+
+Every address is in Slovenian; `scripts/check-design.mjs` fails the build on a page or a link at one of the template's English names (`/imprint`, `/privacy`, …). The addresses are kept in one place, [src/lib/navigation.ts](src/lib/navigation.ts).
+
+| Page | Address |
+| --- | --- |
+| Domov | `/` |
+| Prenova fasade | `/prenova-fasade` |
+| Nova fasada na ključ | `/nova-fasada-na-kljuc` |
+| Vrste fasad | `/vrste-fasad` |
+| Subvencije | `/subvencije` |
+| Pogosta vprašanja, and one page per question | `/pogosta-vprasanja`, `/pogosta-vprasanja/<vprašanje>` |
+| Povpraševanje, its thank-you and error pages | `/povprasevanje`, `/povprasevanje/hvala`, `/povprasevanje/napaka` |
+| Pravno obvestilo (the imprint) | `/pravno-obvestilo` |
+| Politika zasebnosti | `/zasebnost` |
+| Izjava o dostopnosti | `/dostopnost` |
+| Zemljevid strani | `/zemljevid-strani` |
+
+The texts of the site's own pages are in [src/texts/sl.ts](src/texts/sl.ts); the FAQ and the legal texts in `src/content/`. Every fact cites its source with the date it was checked ([src/lib/sources.ts](src/lib/sources.ts), the FAQ entries' `sources`).
+
+The quote form waits for Trislab's shared form Worker: until [src/lib/quote-form.ts](src/lib/quote-form.ts) has its address, the form is shown with its button switched off. The site shows no e-mail address or phone number; the form is the only contact.
 
 ## Environments
 
@@ -20,9 +42,10 @@ How a change moves between them is in [docs/deployment.md](docs/deployment.md). 
 
 ## Before production
 
-- Replace the sample texts: the legal pages in `src/content/legal/<language>/` need a lawyer's review, and the about page and the other pages need the site's own texts in every language.
-- Have a native speaker review every language that is not the source of the texts.
-- Replace the logo (`src/components/Logo.astro`, `public/favicon.svg`) and check the brand colours in `src/styles/tokens.css`.
+- Connect the quote form: the Worker's address and the Turnstile site key in `src/lib/quote-form.ts`, the form page's Content-Security-Policy rule in `public/_headers` ([docs/forms.md](docs/forms.md)); test a submission end to end and the form with a keyboard and a screen reader.
+- Check the subsidy facts on `/subvencije` and in the FAQ against the call again, and update the `checked` dates.
+- Choose licensed stock photos for the hero (the drawing in `src/components/HeroFacade.astro` stands in), or keep the drawing.
+- Have a lawyer review the privacy policy and the client accept the texts, including "brezplačno in brez obveznosti" on the quote request.
 - Check the facts in `src/site.config.ts` against the company's published data.
 
 ## Work on it

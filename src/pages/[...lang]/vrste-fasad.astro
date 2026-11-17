@@ -1,0 +1,29 @@
+---
+// Vrste fasad: the three systems with their layers, the comparison table (use,
+// look, care; no prices) and how to choose.
+import PageIntro from "../../components/PageIntro.astro";
+import QuoteCta from "../../components/QuoteCta.astro";
+import SystemCards from "../../components/SystemCards.astro";
+import SystemsTable from "../../components/SystemsTable.astro";
+import TextBlocks from "../../components/TextBlocks.astro";
+import { languagePaths, type Lang } from "../../i18n";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { pageTexts } from "../../texts";
+
+export const getStaticPaths = languagePaths;
+
+const { lang } = Astro.props as { lang: Lang };
+const { systems } = pageTexts(lang);
+---
+
+<BaseLayout title={systems.intro.title} description={systems.intro.description} lang={lang}>
+  <PageIntro intro={systems.intro} />
+  <section class="band">
+    <div class="wrap">
+      <SystemCards lang={lang} />
+    </div>
+  </section>
+  <SystemsTable lang={lang} />
+  <TextBlocks blocks={[systems.choosing]} />
+  <QuoteCta lang={lang} />
+</BaseLayout>

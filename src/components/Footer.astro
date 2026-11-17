@@ -1,5 +1,10 @@
 ---
+// The site's footer on the dark green band: the name and description, the
+// pages, the legal pages and the sitemap, and the quote request, which is the
+// site's only way to get in touch. The company is named in the imprint only
+// (docs/brief.md).
 import { localizedPath, t, type Lang } from "../i18n";
+import { LEGAL_PATHS, legalLinks, menuLinks, QUOTE_PATH } from "../lib/navigation";
 import site from "../site.config";
 import EnvironmentBadge from "./EnvironmentBadge.astro";
 import Logo from "./Logo.astro";
@@ -9,13 +14,8 @@ interface Props {
 }
 
 const { lang } = Astro.props;
-const legal = [
-  { on: site.legalPages.imprint, href: "/imprint", label: t(lang, "legal.imprint") },
-  { on: site.legalPages.privacy, href: "/privacy", label: t(lang, "legal.privacy") },
-  { on: site.legalPages.accessibility, href: "/accessibility", label: t(lang, "legal.accessibility") },
-  { on: site.legalPages.sustainability, href: "/sustainability", label: t(lang, "legal.sustainability") },
-  { on: true, href: "/sitemap", label: t(lang, "legal.sitemap") },
-].filter((link) => link.on);
+const pages = [...menuLinks(lang), { href: QUOTE_PATH, label: t(lang, "nav.quote") }];
+const legal = [...legalLinks(lang), { href: LEGAL_PATHS.sitemap, label: t(lang, "legal.sitemap") }];
 const year = new Date().getFullYear();
 ---
 
@@ -23,24 +23,37 @@ const year = new Date().getFullYear();
   <div class="wrap footer-row">
     <div class="footer-about">
       <a class="brand" href={localizedPath(lang)}>
-        <Logo size={28} />
+        <Logo size={30} />
         <span>{site.name}</span>
       </a>
       <p>{site.description[lang]}</p>
-      <p>{t(lang, "footer.noCookies")}</p>
+      <p><a class="button" href={localizedPath(lang, QUOTE_PATH)}>{t(lang, "cta.quote")}</a></p>
     </div>
-    {
-      legal.length > 0 && (
-        <nav class="legal-links" aria-label={t(lang, "legal.nav")}>
-          {legal.map(({ href, label }) => (
-            <a href={localizedPath(lang, href)}>{label}</a>
-          ))}
-        </nav>
-      )
-    }
+    <nav class="footer-links" aria-label={t(lang, "footer.pages")}>
+      <ul>
+        {
+          pages.map(({ href, label }) => (
+            <li>
+              <a href={localizedPath(lang, href)}>{label}</a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
+    <nav class="footer-links" aria-label={t(lang, "legal.nav")}>
+      <ul>
+        {
+          legal.map(({ href, label }) => (
+            <li>
+              <a href={localizedPath(lang, href)}>{label}</a>
+            </li>
+          ))
+        }
+      </ul>
+    </nav>
   </div>
   <div class="wrap footer-row footer-bottom">
-    <span>© {year} {site.company.legalName}. {t(lang, "footer.rights")}</span>
+    <span>© {year} {site.name}. {t(lang, "footer.rights")} {t(lang, "footer.noCookies")}</span>
     <EnvironmentBadge />
   </div>
 </footer>

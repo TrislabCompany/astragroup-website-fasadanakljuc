@@ -6,6 +6,7 @@
 // First written by `pnpm init-site` from site.yaml; from then on it is the
 // site's own.
 
+import shareImage from "./assets/share.png";
 import type { SiteSettings } from "./lib/site-settings";
 
 /** The site's languages. With one language, the URLs have no language prefix. */
@@ -16,10 +17,16 @@ const site: SiteSettings<Lang> = {
   url: "https://fasadanakljuc.si",
   name: "Fasada na ključ",
   description: {
-    sl: "Prenova fasade in nova fasada na ključ na Obali in Krasu, korak za korakom: od ogleda do predaje. Pošljite povpraševanje za ponudbo."
+    sl: "Prenova fasade in nova fasada na ključ na Obali in Krasu, korak za korakom: od ogleda do prevzema. Pošljite povpraševanje za ponudbo."
   },
   languages: languages,
   defaultLanguage: "sl",
+  shareImage: {
+    src: shareImage,
+    alt: {
+      sl: "Fasada na ključ: risba hiše, katere stena je odprta in kaže kamen, toplotno izolacijo, armirni sloj in nov omet, ter napis Prenova fasade in nova fasada na ključ, korak za korakom, od ogleda do prevzema."
+    }
+  },
   themeColor: "#2e5a4f",
   collections: [
     {

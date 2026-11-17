@@ -1,0 +1,40 @@
+---
+// The facade systems, one card each: the name, what it is, and its layers
+// from the wall out, drawn as a stack of bands (the bands are decoration; the
+// list carries the meaning). With `compact`, only the name and the summary,
+// for the home page.
+import type { Lang } from "../i18n";
+import { pageTexts } from "../texts";
+
+interface Props {
+  lang: Lang;
+  /** Heading level of each card: 2 on Vrste fasad, 3 under the home page's section heading. */
+  level?: 2 | 3;
+  compact?: boolean;
+}
+
+const { lang, level = 2, compact = false } = Astro.props;
+const { systems } = pageTexts(lang);
+const Heading = level === 2 ? "h2" : "h3";
+---
+
+<ul class:list={["systems", { "systems-compact": compact }]}>
+  {
+    systems.items.map((item) => (
+      <li class="system" id={compact ? undefined : item.id}>
+        <Heading>{item.name}</Heading>
+        <p>{item.summary}</p>
+        {!compact && (
+          <>
+            <p class="system-layers-label">{systems.layersLabel}</p>
+            <ol class="system-layers">
+              {item.layers.map((layer) => (
+                <li>{layer}</li>
+              ))}
+            </ol>
+          </>
+        )}
+      </li>
+    ))
+  }
+</ul>

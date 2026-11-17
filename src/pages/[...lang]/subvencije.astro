@@ -1,0 +1,33 @@
+---
+// Subvencije: the Eko sklad subsidy for facade insulation, as a dated guide
+// (docs/brief.md): what, which houses, how much, the order of things, the
+// documents and who helps, each fact from the call's text with the date it
+// was checked (src/lib/sources.ts).
+import PageIntro from "../../components/PageIntro.astro";
+import ProcessLine from "../../components/ProcessLine.astro";
+import QuoteCta from "../../components/QuoteCta.astro";
+import Sources from "../../components/Sources.astro";
+import TextBlocks from "../../components/TextBlocks.astro";
+import { languagePaths, type Lang } from "../../i18n";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { SOURCES } from "../../lib/sources";
+import { pageTexts } from "../../texts";
+
+export const getStaticPaths = languagePaths;
+
+const { lang } = Astro.props as { lang: Lang };
+const { subsidy } = pageTexts(lang);
+const sources = [SOURCES.call, SOURCES.callText];
+---
+
+<BaseLayout title={subsidy.intro.title} description={subsidy.intro.description} lang={lang}>
+  <PageIntro intro={subsidy.intro}>
+    <Sources lang={lang} sources={sources} label={subsidy.checkedLabel} />
+  </PageIntro>
+  <TextBlocks blocks={[subsidy.what, subsidy.who, subsidy.howMuch]} />
+  <ProcessLine lang={lang} id="order" heading={subsidy.order.heading} steps={subsidy.order.steps} />
+  <TextBlocks blocks={[subsidy.documents, subsidy.help]}>
+    <Sources lang={lang} sources={sources} />
+  </TextBlocks>
+  <QuoteCta lang={lang} />
+</BaseLayout>

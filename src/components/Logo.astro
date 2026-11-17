@@ -1,7 +1,10 @@
 ---
-// The site's logo mark: a neutral sample, replace it with the brand's. One of
-// the two brand files with public/favicon.svg. Decorative: the name next to it
-// carries the meaning, so it is hidden from assistive technology.
+// The site's logo mark: a house front in render white on a mineral-green tile,
+// its wall drawn as the layers of a facade, with an ochre keyhole ("na ključ").
+// Drawn for this site; it carries no mark of the company. One of the two brand
+// files with public/favicon.svg. Decorative: the name next to it carries the
+// meaning, so it is hidden from assistive technology. The colours are set in
+// src/styles/global.css (.logo-*).
 interface Props {
   size?: number;
 }
@@ -9,7 +12,9 @@ interface Props {
 const { size = 36 } = Astro.props;
 ---
 
-<svg width={size} height={size} viewBox="0 0 32 32" aria-hidden="true">
-  <rect width="32" height="32" rx="6" fill="#2457c5"></rect>
-  <path d="M8 10h16v3h-6.5v11h-3V13H8z" fill="#ffffff"></path>
+<svg class="logo" width={size} height={size} viewBox="0 0 32 32" aria-hidden="true" focusable="false">
+  <rect class="logo-tile" width="32" height="32" rx="6"></rect>
+  <path class="logo-house" d="M6.5 15 16 6.5l9.5 8.5V26h-19z"></path>
+  <path class="logo-layers" d="M9 16.2h1.6V26H9zM12.2 14.4h1.6V26h-1.6z"></path>
+  <path class="logo-key" d="M19 15.4a2.3 2.3 0 0 1 1.2 4.3l.9 4.3h-4.2l.9-4.3a2.3 2.3 0 0 1 1.2-4.3z"></path>
 </svg>

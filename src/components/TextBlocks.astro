@@ -1,0 +1,34 @@
+---
+// Blocks of text with a heading (src/texts/): paragraphs, a list, or both. A
+// slot after the blocks takes their sources.
+import type { TextBlock } from "../texts";
+
+interface Props {
+  blocks: TextBlock[];
+  /** The band's background: the page (default) or the white surface. */
+  surface?: boolean;
+}
+
+const { blocks, surface = false } = Astro.props;
+---
+
+<section class:list={["band", { "band-surface": surface }]}>
+  <div class="wrap text-blocks">
+    {
+      blocks.map((block) => (
+        <div class="text-block">
+          <h2>{block.heading}</h2>
+          {block.paragraphs?.map((paragraph) => <p>{paragraph}</p>)}
+          {block.items && (
+            <ul>
+              {block.items.map((item) => (
+                <li>{item}</li>
+              ))}
+            </ul>
+          )}
+        </div>
+      ))
+    }
+    <slot />
+  </div>
+</section>
