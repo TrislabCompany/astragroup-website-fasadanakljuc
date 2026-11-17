@@ -9,7 +9,7 @@ The site's own facts, which are the same in every Environment (languages, compan
 | Kind | Examples | Set by |
 | --- | --- | --- |
 | Platform settings | `PLATFORM_ENVIRONMENT` (`dev`, `staging` or `production`), `PLATFORM_VERSION` (the tag `vX.Y.Z`, or the commit on dev) | The deploy workflow |
-| Your public settings | `PUBLIC_CONTACT_EMAIL` | Variables of the GitHub Environment (section 3) |
+| Your public settings | `PUBLIC_FORMS_URL` (the form Worker's origin, such as `https://forms-dev.trislab.com`), `PUBLIC_TURNSTILE_SITE_KEY` (the Environment's public Turnstile site key); both read by the quote form, `src/lib/quote-form.ts` | Variables of the GitHub Environment (section 3) |
 | Deploy settings, never in `/config.json` | `CLOUDFLARE_ACCOUNT_ID`, `PAGES_PROJECT`, `SITE_URL`, the secret `CLOUDFLARE_API_TOKEN` | The platform, in the GitHub Environment ([deployment.md](deployment.md#set-up-and-tear-down)) |
 
 Visit counts are not an Environment setting: they are switched on in `src/site.config.ts` and count only on the production domain ([analytics.md](analytics.md)).

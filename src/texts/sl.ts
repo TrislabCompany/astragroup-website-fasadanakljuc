@@ -378,8 +378,8 @@ const sl: PageTexts = {
     optional: "neobvezno",
     choose: "Izberite",
     submit: "Pošlji povpraševanje",
-    notConnected:
-      "Pošiljanje obrazca še ni vključeno. Stran je v pripravi; obrazec bo deloval ob javni objavi.",
+    formOff:
+      "Pred pošiljanjem stran z JavaScriptom preveri, da obrazec pošilja človek. Če gumb ostane izklopljen, dovolite JavaScript ali osvežite stran.",
     nextHeading: "Kaj se zgodi potem",
     next: [
       "Preberemo povpraševanje in se vam oglasimo.",
