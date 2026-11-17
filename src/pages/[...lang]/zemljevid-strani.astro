@@ -1,0 +1,68 @@
+---
+// Zemljevid strani, the sitemap for people: every page of the site in this
+// language, as links. Search engines read /sitemap-index.xml instead
+// (astro.config.mjs). It also gives visitors a second way to find a page
+// besides the menu (WCAG 2.4.5). The pages come from src/lib/navigation.ts and
+// the lists of items from `collections` in src/site.config.ts.
+import { languagePaths, localizedPath, t, type Lang } from "../../i18n";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { entrySlug } from "../../lib/content";
+import { sortedItems, type ItemCollection } from "../../lib/items";
+import { legalLinks, menuLinks, QUOTE_PATH } from "../../lib/navigation";
+import site from "../../site.config";
+
+export const getStaticPaths = languagePaths;
+
+const { lang } = Astro.props as { lang: Lang };
+const sections = await Promise.all(
+  site.collections.map(async (collection) => ({ ...collection, items: await sortedItems(collection.id as ItemCollection, lang) })),
+);
+// The pages of the site's own design; the lists of items follow below.
+const pages = menuLinks(lang).filter(({ href }) => !site.collections.some((collection) => href === `/${collection.id}`));
+const legal = legalLinks(lang);
+---
+
+<BaseLayout title={t(lang, "legal.sitemap")} lang={lang}>
+  <div class="wrap page prose">
+    <h1>{t(lang, "legal.sitemap")}</h1>
+    <ul class="sitemap">
+      <li><a href={localizedPath(lang)}>{t(lang, "nav.home")}</a></li>
+      {
+        pages.map(({ href, label }) => (
+          <li>
+            <a href={localizedPath(lang, href)}>{label}</a>
+          </li>
+        ))
+      }
+      {
+        sections.map((section) => (
+          <li>
+            <a href={localizedPath(lang, `/${section.id}`)}>{section.title[lang]}</a>
+            <ul>
+              {section.items.map((entry) => (
+                <li>
+                  <a href={localizedPath(lang, `/${section.id}/${entrySlug(entry)}`)}>{entry.data.title}</a>
+                </li>
+              ))}
+            </ul>
+          </li>
+        ))
+      }
+      <li><a href={localizedPath(lang, QUOTE_PATH)}>{t(lang, "nav.quote")}</a></li>
+      {
+        legal.length > 0 && (
+          <li>
+            {t(lang, "legal.nav")}
+            <ul>
+              {legal.map(({ href, label }) => (
+                <li>
+                  <a href={localizedPath(lang, href)}>{label}</a>
+                </li>
+              ))}
+            </ul>
+          </li>
+        )
+      }
+    </ul>
+  </div>
+</BaseLayout>

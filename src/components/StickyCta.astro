@@ -1,0 +1,25 @@
+---
+// The bar at the bottom of the screen on a phone, with the quote request
+// (docs/brief.md). The brief's second action, a call button, is left out: the
+// site shows no phone number, so the form is the only contact. Hidden on wider
+// screens, where the header's button is in view, and on the quote pages.
+import { localizedPath, t, type Lang } from "../i18n";
+import { isCurrent, QUOTE_PATH } from "../lib/navigation";
+
+interface Props {
+  lang: Lang;
+  path: string;
+}
+
+const { lang, path } = Astro.props;
+---
+
+{
+  !isCurrent(path, QUOTE_PATH) && (
+    <aside class="sticky-cta" aria-label={t(lang, "nav.quote")}>
+      <a class="button" href={localizedPath(lang, QUOTE_PATH)}>
+        {t(lang, "cta.quote")}
+      </a>
+    </aside>
+  )
+}

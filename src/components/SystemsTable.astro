@@ -1,0 +1,49 @@
+---
+// The comparison of the facade systems (docs/brief.md): use, look and care,
+// one row per system. On a phone the table scrolls inside its own frame,
+// which takes keyboard focus and is named by the caption, so the page itself
+// never scrolls sideways.
+import type { Lang } from "../i18n";
+import { pageTexts } from "../texts";
+
+interface Props {
+  lang: Lang;
+}
+
+const { lang } = Astro.props;
+const { systems } = pageTexts(lang);
+const { columns } = systems;
+---
+
+<section class="band band-surface" aria-labelledby="comparison">
+  <div class="wrap">
+    <h2 id="comparison">{systems.tableHeading}</h2>
+    <div class="table-frame" role="region" aria-labelledby="comparison-caption" tabindex="0">
+      <table class="comparison">
+        <caption id="comparison-caption">{systems.tableCaption}</caption>
+        <thead>
+          <tr>
+            <th scope="col">{columns.system}</th>
+            <th scope="col">{columns.use}</th>
+            <th scope="col">{columns.look}</th>
+            <th scope="col">{columns.care}</th>
+          </tr>
+        </thead>
+        <tbody>
+          {
+            systems.items.map((item) => (
+              <tr>
+                <th scope="row">
+                  <a href={`#${item.id}`}>{item.name}</a>
+                </th>
+                <td>{item.use}</td>
+                <td>{item.look}</td>
+                <td>{item.care}</td>
+              </tr>
+            ))
+          }
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>

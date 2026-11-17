@@ -1,46 +1,53 @@
 ---
-import ContactCta from "../../components/ContactCta.astro";
-import ItemCard from "../../components/ItemCard.astro";
+// The home page, top to bottom (docs/brief.md): the hero with one promise and
+// the two paths, the process at a glance, the facade systems in short, the
+// subsidy note and the quote request. The footer follows from the layout.
+import HeroFacade from "../../components/HeroFacade.astro";
+import PathChooser from "../../components/PathChooser.astro";
+import ProcessLine from "../../components/ProcessLine.astro";
+import QuoteCta from "../../components/QuoteCta.astro";
+import SystemCards from "../../components/SystemCards.astro";
 import { languagePaths, localizedPath, t, type Lang } from "../../i18n";
 import BaseLayout from "../../layouts/BaseLayout.astro";
-import { sortedItems, type ItemCollection } from "../../lib/items";
 import site from "../../site.config";
+import { pageTexts } from "../../texts";
 
 export const getStaticPaths = languagePaths;
 
 const { lang } = Astro.props as { lang: Lang };
-// A section for every list of items marked home in src/site.config.ts.
-const sections = await Promise.all(
-  site.collections
-    .filter((collection) => collection.home)
-    .map(async (collection) => ({ ...collection, items: await sortedItems(collection.id as ItemCollection, lang) })),
-);
+const { home } = pageTexts(lang);
 ---
 
-<BaseLayout title={site.name} lang={lang}>
+<BaseLayout title={`${site.name}: ${home.intro.title}`} description={home.intro.description} lang={lang}>
   <section class="hero">
-    <h1>{site.name}</h1>
-    <p class="lead">{site.description[lang]}</p>
-    <div class="actions">
-      <a class="button" href={localizedPath(lang, "/contact")}>{t(lang, "cta.contact")}</a>
+    <div class="wrap hero-row">
+      <div class="hero-text">
+        <p class="eyebrow">{home.intro.eyebrow}</p>
+        <h1>{home.intro.title}</h1>
+        <p class="lead">{home.intro.lead}</p>
+        <h2 class="paths-heading">{home.pathsHeading}</h2>
+        <PathChooser lang={lang} />
+      </div>
+      <HeroFacade />
     </div>
   </section>
-
-  {
-    sections.map((section) => (
-      <section class="section" aria-labelledby={section.id}>
-        <h2 id={section.id}>
-          <a href={localizedPath(lang, `/${section.id}`)}>{section.title[lang]}</a>
-        </h2>
-        <p class="lead">{section.lead[lang]}</p>
-        <ul class="grid">
-          {section.items.map((entry) => (
-            <ItemCard entry={entry} collection={section.id as ItemCollection} lang={lang} />
-          ))}
-        </ul>
-      </section>
-    ))
-  }
-
-  <ContactCta lang={lang} />
+  <ProcessLine lang={lang} id="steps" heading={home.stepsHeading} lead={home.stepsLead} steps={home.steps} owner={false}>
+    <p class="band-link"><a href={localizedPath(lang, "/prenova-fasade")}>{t(lang, "cta.renovationSteps")}</a></p>
+  </ProcessLine>
+  <section class="band" aria-labelledby="systems">
+    <div class="wrap">
+      <h2 id="systems">{home.systemsHeading}</h2>
+      <p class="lead">{home.systemsLead}</p>
+      <SystemCards lang={lang} level={3} compact />
+      <p class="band-link"><a href={localizedPath(lang, "/vrste-fasad")}>{t(lang, "cta.systems")}</a></p>
+    </div>
+  </section>
+  <section class="band band-surface" aria-labelledby="subsidy">
+    <div class="wrap subsidy-note">
+      <h2 id="subsidy">{home.subsidyHeading}</h2>
+      <p>{home.subsidyText}</p>
+      <p class="band-link"><a href={localizedPath(lang, "/subvencije")}>{t(lang, "cta.subsidy")}</a></p>
+    </div>
+  </section>
+  <QuoteCta lang={lang} />
 </BaseLayout>

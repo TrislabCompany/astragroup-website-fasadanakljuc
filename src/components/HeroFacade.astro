@@ -1,0 +1,28 @@
+---
+// The home page's drawing: the corner of a Karst stone house whose wall is
+// cut open to show the layers of a new facade (wall, insulation, mesh,
+// render), with scaffolding at its side. Decoration only, so it is hidden
+// from assistive technology; the hero's text carries the meaning. Colours
+// come from src/styles/global.css (.hero-*). It stands in until a licensed
+// stock photo is chosen (docs/brief.md, Photos).
+// Stone courses of the old wall: short horizontal joints in staggered rows.
+const courses = [196, 222, 248, 274, 300, 326].flatMap((y, row) =>
+  [0, 1, 2].map((i) => `M${92 + (row % 2) * 18 + i * 34} ${y}h24`),
+);
+---
+
+<svg class="hero-drawing" viewBox="0 0 560 420" aria-hidden="true" focusable="false">
+  <rect class="hero-sky" width="560" height="420" rx="10"></rect>
+  <path class="hero-hill" d="M0 330c90-30 170-36 260-14s200 8 300-22V420H0z"></path>
+  <path class="hero-roof" d="M70 168 290 78l220 90z"></path>
+  <path class="hero-render" d="M84 168h412v192H84z"></path>
+  <path class="hero-stone" d="M84 168h120v192H84z"></path>
+  {courses.map((d) => <path class="hero-joint" d={d} />)}
+  <path class="hero-insulation" d="M204 168h40v192h-40z"></path>
+  <path class="hero-mesh" d="M244 168h14v192h-14z"></path>
+  <path class="hero-mesh-lines" d="M244 190h14M244 214h14M244 238h14M244 262h14M244 286h14M244 310h14M244 334h14"></path>
+  <path class="hero-window" d="M318 212h56v70h-56zM414 212h56v70h-56z"></path>
+  <path class="hero-sill" d="M312 282h68v8h-68zM408 282h68v8h-68z"></path>
+  <path class="hero-door" d="M330 300h40v60h-40z"></path>
+  <path class="hero-scaffold" d="M40 150v210M66 150v210M40 196h26M40 252h26M40 308h26M40 196l26 56M40 252l26 56"></path>
+</svg>

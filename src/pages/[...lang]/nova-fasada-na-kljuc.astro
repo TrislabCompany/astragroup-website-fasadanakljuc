@@ -1,0 +1,26 @@
+---
+// Nova fasada na ključ: what "na ključ" means, the steps from the plan to the
+// handover, what is included and what isn't, and the quote request.
+import Checklist from "../../components/Checklist.astro";
+import PageIntro from "../../components/PageIntro.astro";
+import ProcessLine from "../../components/ProcessLine.astro";
+import QuoteCta from "../../components/QuoteCta.astro";
+import TextBlocks from "../../components/TextBlocks.astro";
+import { languagePaths, type Lang } from "../../i18n";
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import { pageTexts } from "../../texts";
+
+export const getStaticPaths = languagePaths;
+
+const { lang } = Astro.props as { lang: Lang };
+const { newFacade } = pageTexts(lang);
+---
+
+<BaseLayout title={newFacade.intro.title} description={newFacade.intro.description} lang={lang}>
+  <PageIntro intro={newFacade.intro} />
+  <TextBlocks blocks={[newFacade.meaning]} />
+  <ProcessLine lang={lang} id="steps" heading={newFacade.stepsHeading} steps={newFacade.steps} />
+  <Checklist id="included" heading={newFacade.includedHeading} items={newFacade.included} />
+  <Checklist id="excluded" heading={newFacade.excludedHeading} lead={newFacade.excludedLead} items={newFacade.excluded} excluded />
+  <QuoteCta lang={lang} />
+</BaseLayout>

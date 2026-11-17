@@ -74,9 +74,12 @@ Several pages, built from the template's sections (`page-sections`), in Slovenia
 | Subvencije | `/subvencije/` |
 | Pogosta vprašanja (entries in `content-collections`) | `/pogosta-vprasanja/` |
 | Povpraševanje | `/povprasevanje/` |
-| Imprint, privacy policy, accessibility statement (`legal-pages`) | from the template |
+| Pravno obvestilo, the imprint (`legal-pages`) | `/pravno-obvestilo/` |
+| Politika zasebnosti (`legal-pages`) | `/zasebnost/` |
+| Izjava o dostopnosti (`legal-pages`) | `/dostopnost/` |
+| Zemljevid strani, the sitemap for people | `/zemljevid-strani/` |
 
-No references page, no about page, no blog. A references page is added once there are before and after photos of real jobs.
+Every address is in Slovenian, the template's legal pages and sitemap included. No references page, no about page, no blog. A references page is added once there are before and after photos of real jobs.
 
 ## Features
 
