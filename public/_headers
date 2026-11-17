@@ -6,12 +6,19 @@
 # header in one rule only. Two rules with the same path don't add up: only the
 # last counts.
 #
+# The quote form (/povprasevanje, src/components/QuoteForm.astro) loads
+# Cloudflare Turnstile and posts to the form Worker of each Environment, so the
+# one policy allows challenges.cloudflare.com in script-src and frame-src and
+# the three Workers in form-action. It is set here, once, and not in a rule of
+# the form page: two rules that match a page send two policies, and the
+# stricter one would block Turnstile (docs/forms.md, section 3).
+#
 # "! Access-Control-Allow-Origin" removes the header Pages adds by default:
 # no other site needs to read these files.
 
 /*
   ! Access-Control-Allow-Origin
-  Content-Security-Policy: default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self'; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'
+  Content-Security-Policy: default-src 'self'; script-src 'self' https://challenges.cloudflare.com; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'self'; frame-src https://challenges.cloudflare.com; object-src 'none'; base-uri 'self'; form-action 'self' https://forms-dev.trislab.com https://forms-staging.trislab.com https://forms.trislab.com; frame-ancestors 'none'
   Strict-Transport-Security: max-age=31536000
   X-Content-Type-Options: nosniff
   X-Frame-Options: DENY

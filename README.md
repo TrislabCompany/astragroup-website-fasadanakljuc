@@ -28,7 +28,7 @@ Every address is in Slovenian; `scripts/check-design.mjs` fails the build on a p
 
 The texts of the site's own pages are in [src/texts/sl.ts](src/texts/sl.ts); the FAQ and the legal texts in `src/content/`. Every fact cites its source with the date it was checked ([src/lib/sources.ts](src/lib/sources.ts), the FAQ entries' `sources`).
 
-The quote form waits for Trislab's shared form Worker: until [src/lib/quote-form.ts](src/lib/quote-form.ts) has its address, the form is shown with its button switched off. The site shows no e-mail address or phone number; the form is the only contact.
+The quote form posts to Trislab's shared form Worker of each Environment, with Cloudflare Turnstile. One build runs everywhere, so the form page reads the Worker's address and the Turnstile site key from the Environment's `/config.json` (`PUBLIC_FORMS_URL`, `PUBLIC_TURNSTILE_SITE_KEY`, [src/lib/quote-form.ts](src/lib/quote-form.ts)); without them, or without JavaScript, the button stays off and a note says why. The site shows no e-mail address or phone number; the form is the only contact.
 
 ## Environments
 
@@ -42,7 +42,7 @@ How a change moves between them is in [docs/deployment.md](docs/deployment.md). 
 
 ## Before production
 
-- Connect the quote form: the Worker's address and the Turnstile site key in `src/lib/quote-form.ts`, the form page's Content-Security-Policy rule in `public/_headers` ([docs/forms.md](docs/forms.md)); test a submission end to end and the form with a keyboard and a screen reader.
+- Test the quote form: a submission end to end on dev, staging and production, a submission without a valid Turnstile token refused, and the form with a keyboard and a screen reader, Turnstile included.
 - Check the subsidy facts on `/subvencije` and in the FAQ against the call again, and update the `checked` dates.
 - Choose licensed stock photos for the hero (the drawing in `src/components/HeroFacade.astro` stands in), or keep the drawing.
 - Have a lawyer review the privacy policy and the client accept the texts, including "brezplačno in brez obveznosti" on the quote request.

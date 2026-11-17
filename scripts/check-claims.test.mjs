@@ -2,7 +2,19 @@
 
 import assert from "node:assert/strict";
 import { test } from "node:test";
-import { analyticsEndpoint, analyticsOf, connectSources, directiveSources, publishedFigures, scriptsIn, unexpectedScripts } from "./check-claims.mjs";
+import {
+  analyticsEndpoint,
+  analyticsOf,
+  connectSources,
+  directiveSources,
+  FORM_PAGE,
+  formPolicyGaps,
+  formsOrigins,
+  hasFormScript,
+  publishedFigures,
+  scriptsIn,
+  unexpectedScripts,
+} from "./check-claims.mjs";
 
 test("JSON-LD is data, every other script counts", () => {
   assert.deepEqual(scriptsIn('<script type="application/ld+json">{}</script><p>x</p>'), []);
@@ -46,4 +58,39 @@ test("reads script-src and connect-src from the headers file", () => {
   assert.deepEqual(directiveSources(headers, "script-src"), ["'self'", "https://static.cloudflareinsights.com"]);
   assert.deepEqual(connectSources(headers), ["'self'", "https://cloudflareinsights.com"]);
   assert.deepEqual(directiveSources("/*\n  X-Frame-Options: DENY\n", "script-src"), []);
+});
+
+const FORM_TAG = '<script type="module" src="/_astro/QuoteForm.astro_astro_type_script_index_0_lang.C73RQEpq.js"></script>';
+
+test("the quote form's script is allowed only on the form page", () => {
+  assert.deepEqual(unexpectedScripts(FORM_TAG, { formPage: true }), []);
+  assert.equal(unexpectedScripts(FORM_TAG).length, 1);
+  assert.equal(unexpectedScripts(FORM_TAG + '<script type="module" src="/_astro/Other.js"></script>', { formPage: true }).length, 1);
+  assert.equal(hasFormScript(FORM_TAG), true);
+  assert.equal(hasFormScript('<script type="application/ld+json">{}</script>'), false);
+});
+
+test("finds the form page with and without a language prefix", () => {
+  assert.equal(FORM_PAGE.test("/povprasevanje.html"), true);
+  assert.equal(FORM_PAGE.test("\\en\\povprasevanje.html"), true);
+  assert.equal(FORM_PAGE.test("/povprasevanje/hvala.html"), false);
+  assert.equal(FORM_PAGE.test("/index.html"), false);
+});
+
+test("reads the form Workers' origins from src/lib/quote-form.ts", () => {
+  const source = 'export const FORMS_ORIGINS = ["https://forms-dev.example", "https://forms.example"] as const;';
+  assert.deepEqual(formsOrigins(source), ["https://forms-dev.example", "https://forms.example"]);
+  assert.deepEqual(formsOrigins("export const x = 1;"), []);
+});
+
+test("the policy must allow Turnstile and every form Worker", () => {
+  const workers = ["https://forms-dev.example", "https://forms.example"];
+  const allowed = `/*\n  Content-Security-Policy: default-src 'self'; script-src 'self' https://challenges.cloudflare.com; frame-src https://challenges.cloudflare.com; form-action 'self' ${workers.join(" ")}\n`;
+  assert.deepEqual(formPolicyGaps(allowed, workers), []);
+  const strict = "/*\n  Content-Security-Policy: default-src 'self'; script-src 'self'; form-action 'self' https://forms.example\n";
+  assert.deepEqual(formPolicyGaps(strict, workers), [
+    "script-src doesn't allow https://challenges.cloudflare.com",
+    "frame-src doesn't allow https://challenges.cloudflare.com",
+    "form-action doesn't allow https://forms-dev.example",
+  ]);
 });
