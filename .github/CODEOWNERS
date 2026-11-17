@@ -1,4 +1,4 @@
 * @TrislabCompany/astragroup-fasadanakljuc
 /.github/ @TrislabCompany/astragroup-fasadanakljuc @TrislabCompany/devops
-/platform.yaml @TrislabCompany/astragroup-fasadanakljuc @TrislabCompany/devops
-/.trivyignore @TrislabCompany/astragroup-fasadanakljuc @TrislabCompany/devops
+/public/_headers @TrislabCompany/astragroup-fasadanakljuc @TrislabCompany/devops
+/scripts/write-config.mjs @TrislabCompany/astragroup-fasadanakljuc @TrislabCompany/devops
